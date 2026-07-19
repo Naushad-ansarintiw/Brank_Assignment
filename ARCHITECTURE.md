@@ -48,12 +48,22 @@ If traffic grows:
 4. Run multiple ingestion replicas behind a load balancer; chat server stays separately scalable.
 5. Sample or drop previews under extreme load; keep counters (latency, tokens, status) always.
 
+## Dashboard reads
+
+The chat server exposes two read endpoints over `inference_logs` (no separate metrics service):
+
+- `GET /api/stats?hours=24` — SQL aggregates (avg / p95 latency, error counts) and `date_trunc` buckets for throughput
+- `GET /api/logs?limit=50` — recent rows for the log table
+
+The UI polls these every 10s. This is enough for a demo; under load you'd move aggregates behind a materialized view or a metrics store.
+
 ## Demo checklist
 
 1. `docker compose up --build` with `OPENAI_API_KEY` set.
 2. Open http://localhost:8080, send a few messages, click **Stop** mid-stream.
 3. Create a second chat, switch back (resume), confirm history loads.
-4. Inspect logs:
+4. Open the **Dashboard** tab — confirm cards, chart, and recent logs update.
+5. Or inspect logs in SQL:
 
 ```bash
 docker compose exec db psql -U brank -d brank -c \

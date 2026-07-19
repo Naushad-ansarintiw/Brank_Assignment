@@ -5,7 +5,9 @@ import {
   addMessage,
   createConversation,
   getConversation,
+  getStats,
   listConversations,
+  listInferenceLogs,
   listMessages,
   maybeSetTitle,
 } from './db';
@@ -24,6 +26,28 @@ app.get('/health', (_req, res) => {
   res.json({ ok: true, provider: providerName, model });
 });
 
+app.get('/api/stats', async (req, res) => {
+  try {
+    const hours = Math.min(Math.max(Number(req.query.hours) || 24, 1), 168);
+    const stats = await getStats(hours);
+    res.json(stats);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'failed to load stats' });
+  }
+});
+
+app.get('/api/logs', async (req, res) => {
+  try {
+    const limit = Math.min(Math.max(Number(req.query.limit) || 50, 1), 200);
+    const rows = await listInferenceLogs(limit);
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'failed to load logs' });
+  }
+});
+
 app.get('/api/conversations', async (_req, res) => {
   try {
     const rows = await listConversations();
@@ -33,6 +57,7 @@ app.get('/api/conversations', async (_req, res) => {
     res.status(500).json({ error: 'failed to list conversations' });
   }
 });
+
 
 app.post('/api/conversations', async (req, res) => {
   try {

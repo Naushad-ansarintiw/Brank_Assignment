@@ -36,6 +36,59 @@ export async function loadMessages(
   return res.json();
 }
 
+export interface StatsTotals {
+  requests: number;
+  avg_latency_ms: number;
+  p95_latency_ms: number;
+  errors: number;
+  cancelled: number;
+  total_tokens: number;
+}
+
+export interface StatsBucket {
+  bucket: string;
+  requests: number;
+  avg_latency_ms: number;
+  errors: number;
+}
+
+export interface StatsResponse {
+  totals: StatsTotals;
+  buckets: StatsBucket[];
+}
+
+export interface InferenceLog {
+  id: string;
+  request_id: string;
+  conversation_id: string | null;
+  provider: string;
+  model: string;
+  status: 'ok' | 'error' | 'cancelled';
+  error_message: string | null;
+  latency_ms: number | null;
+  time_to_first_token_ms: number | null;
+  prompt_tokens: number | null;
+  completion_tokens: number | null;
+  total_tokens: number | null;
+  input_preview: string | null;
+  output_preview: string | null;
+  started_at: string;
+  finished_at: string;
+  created_at: string;
+}
+
+export async function fetchStats(hours = 24): Promise<StatsResponse> {
+  const res = await fetch(`/api/stats?hours=${hours}`);
+  if (!res.ok) throw new Error('failed to load stats');
+  return res.json();
+}
+
+export async function fetchLogs(limit = 50): Promise<InferenceLog[]> {
+  const res = await fetch(`/api/logs?limit=${limit}`);
+  if (!res.ok) throw new Error('failed to load logs');
+  return res.json();
+}
+
 export type StreamHandlers = {
   onUser: (msg: Message) => void;
   onToken: (content: string) => void;

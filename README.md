@@ -60,8 +60,8 @@ React UI  --REST/SSE-->  Chat Server  --OpenAI-compatible API-->  LLM Provider
 
 - **`sdk/`** (`@brank/llm-logger`): Proxy around `client.chat.completions.create`. Captures latency, tokens, status, previews, conversation id. Works for streaming and non-streaming. Never blocks the chat path.
 - **`ingestion/`**: `POST /v1/logs` validates with Zod and inserts into `inference_logs`.
-- **`server/`**: Conversations + messages API; streams assistant tokens over SSE; aborts upstream on client disconnect.
-- **`web/`**: List / create / resume conversations, stream tokens, Stop button.
+- **`server/`**: Conversations + messages API; streams assistant tokens over SSE; aborts upstream on client disconnect. Also serves `GET /api/stats` and `GET /api/logs` for the dashboard.
+- **`web/`**: List / create / resume conversations, stream tokens, Stop button. **Dashboard** tab shows latency / throughput / errors and a recent inference log table.
 
 ## Multi-provider
 
@@ -94,9 +94,18 @@ Providers use the OpenAI SDK with a different `baseURL`.
 | OpenAI-compatible providers only | One client path, multi-provider with little code |
 | No auth | Assignment scope; fine for a local demo |
 
+## Dashboard
+
+Open the **Dashboard** tab in the UI (or hit the APIs directly):
+
+- `GET /api/stats?hours=24` — totals (requests, avg/p95 latency, errors, cancelled, tokens) plus hourly buckets for throughput
+- `GET /api/logs?limit=50` — recent `inference_logs` rows
+
+The page polls every 10s. Chart is a plain SVG bar chart (no chart library).
+
 ## What I'd improve with more time
 
-- Latency / throughput / error dashboards over `inference_logs`
+- Richer date-range filters / search on the log table
 - Redis/queue between ingestion and DB writers
 - Basic PII redaction before previews leave the SDK
 - Auth + multi-tenant isolation

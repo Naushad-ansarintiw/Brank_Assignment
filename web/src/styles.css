@@ -175,6 +175,164 @@ body,
   font-size: 13px;
 }
 
+.nav-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+  border-bottom: 1px solid #252a33;
+}
+
+.nav-tabs button {
+  flex: 1;
+  background: transparent;
+  border: 1px solid #2a3140;
+  color: #c7ccd4;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.nav-tabs button.active {
+  background: #243044;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+.dashboard {
+  overflow: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.muted {
+  color: #8b93a7;
+  font-size: 13px;
+}
+
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stat-card {
+  background: #12151b;
+  border: 1px solid #252a33;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #8b93a7;
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.panel {
+  background: #12151b;
+  border: 1px solid #252a33;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.panel h3 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.chart {
+  display: block;
+  max-width: 100%;
+}
+
+.chart-empty {
+  color: #8b93a7;
+  font-size: 13px;
+  padding: 24px 0;
+}
+
+.table-wrap {
+  overflow: auto;
+}
+
+.logs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.logs-table th,
+.logs-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid #252a33;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.logs-table th {
+  color: #8b93a7;
+  font-weight: 500;
+}
+
+.logs-table td.preview {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.badge.ok {
+  background: #14532d;
+  color: #86efac;
+}
+
+.badge.error {
+  background: #3f1d1d;
+  color: #fca5a5;
+}
+
+.badge.cancelled {
+  background: #374151;
+  color: #d1d5db;
+}
+
+@media (max-width: 1100px) {
+  .stat-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 800px) {
   .app {
     grid-template-columns: 1fr;
@@ -184,3 +342,4 @@ body,
     display: none;
   }
 }
+

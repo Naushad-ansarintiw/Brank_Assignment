@@ -7,8 +7,10 @@ import {
   loadMessages,
   sendMessage,
 } from './api';
+import Dashboard from './Dashboard';
 
 export default function App() {
+  const [view, setView] = useState<'chat' | 'dashboard'>('chat');
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -33,6 +35,7 @@ export default function App() {
 
   async function openConversation(id: string) {
     if (streaming) return;
+    setView('chat');
     setError(null);
     setActiveId(id);
     const data = await loadMessages(id);
@@ -41,6 +44,7 @@ export default function App() {
 
   async function onNewChat() {
     if (streaming) return;
+    setView('chat');
     setError(null);
     const convo = await createConversation();
     setConversations((prev) => [convo, ...prev]);
@@ -146,56 +150,78 @@ export default function App() {
             New chat
           </button>
         </div>
-        <ul className="convo-list">
-          {conversations.map((c) => (
-            <li key={c.id}>
-              <button
-                type="button"
-                className={c.id === activeId ? 'active' : ''}
-                onClick={() => openConversation(c.id)}
-                disabled={streaming}
-              >
-                {c.title}
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className="nav-tabs">
+          <button
+            type="button"
+            className={view === 'chat' ? 'active' : ''}
+            onClick={() => setView('chat')}
+          >
+            Chat
+          </button>
+          <button
+            type="button"
+            className={view === 'dashboard' ? 'active' : ''}
+            onClick={() => setView('dashboard')}
+          >
+            Dashboard
+          </button>
+        </div>
+        {view === 'chat' && (
+          <ul className="convo-list">
+            {conversations.map((c) => (
+              <li key={c.id}>
+                <button
+                  type="button"
+                  className={c.id === activeId ? 'active' : ''}
+                  onClick={() => openConversation(c.id)}
+                  disabled={streaming}
+                >
+                  {c.title}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </aside>
 
-      <main className="chat">
-        <div className="messages">
-          {messages.length === 0 && (
-            <div className="empty">Start a conversation. Context is kept across turns.</div>
-          )}
-          {messages.map((m) => (
-            <div key={m.id} className={`bubble ${m.role}`}>
-              <div className="role">{m.role}</div>
-              <div className="content">{m.content || (m.id === 'streaming' ? '…' : '')}</div>
-            </div>
-          ))}
-          <div ref={bottomRef} />
-        </div>
+      {view === 'dashboard' ? (
+        <Dashboard />
+      ) : (
+        <main className="chat">
+          <div className="messages">
+            {messages.length === 0 && (
+              <div className="empty">Start a conversation. Context is kept across turns.</div>
+            )}
+            {messages.map((m) => (
+              <div key={m.id} className={`bubble ${m.role}`}>
+                <div className="role">{m.role}</div>
+                <div className="content">{m.content || (m.id === 'streaming' ? '…' : '')}</div>
+              </div>
+            ))}
+            <div ref={bottomRef} />
+          </div>
 
-        {error && <div className="error">{error}</div>}
+          {error && <div className="error">{error}</div>}
 
-        <form className="composer" onSubmit={onSubmit}>
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Message…"
-            disabled={streaming}
-          />
-          {streaming ? (
-            <button type="button" className="stop" onClick={onStop}>
-              Stop
-            </button>
-          ) : (
-            <button type="submit" disabled={!input.trim()}>
-              Send
-            </button>
-          )}
-        </form>
-      </main>
+          <form className="composer" onSubmit={onSubmit}>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Message…"
+              disabled={streaming}
+            />
+            {streaming ? (
+              <button type="button" className="stop" onClick={onStop}>
+                Stop
+              </button>
+            ) : (
+              <button type="submit" disabled={!input.trim()}>
+                Send
+              </button>
+            )}
+          </form>
+        </main>
+      )}
     </div>
   );
 }
