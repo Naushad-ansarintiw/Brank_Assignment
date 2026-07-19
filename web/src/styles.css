@@ -1,0 +1,186 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: #0f1115;
+  color: #e8eaed;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  height: 100%;
+}
+
+.sidebar {
+  border-right: 1px solid #252a33;
+  background: #12151b;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.sidebar-header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid #252a33;
+}
+
+.sidebar-header h1 {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.sidebar-header button,
+.composer button {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.sidebar-header button:disabled,
+.composer button:disabled,
+.composer input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.composer button.stop {
+  background: #ef4444;
+}
+
+.convo-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  overflow: auto;
+  flex: 1;
+}
+
+.convo-list li button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: #c7ccd4;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.convo-list li button:hover {
+  background: #1a1f29;
+}
+
+.convo-list li button.active {
+  background: #243044;
+  color: #fff;
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.messages {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.empty {
+  margin: auto;
+  color: #8b93a7;
+  font-size: 14px;
+}
+
+.bubble {
+  max-width: 720px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.bubble.user {
+  align-self: flex-end;
+  background: #1e3a5f;
+}
+
+.bubble.assistant {
+  align-self: flex-start;
+  background: #1a1f29;
+  border: 1px solid #252a33;
+}
+
+.bubble .role {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8b93a7;
+  margin-bottom: 4px;
+}
+
+.composer {
+  display: flex;
+  gap: 8px;
+  padding: 16px 24px 24px;
+  border-top: 1px solid #252a33;
+}
+
+.composer input {
+  flex: 1;
+  background: #12151b;
+  border: 1px solid #2a3140;
+  border-radius: 10px;
+  color: #e8eaed;
+  padding: 12px 14px;
+  font-size: 14px;
+  outline: none;
+}
+
+.composer input:focus {
+  border-color: #3b82f6;
+}
+
+.error {
+  color: #fca5a5;
+  background: #3f1d1d;
+  margin: 0 24px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+@media (max-width: 800px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+}

@@ -1,0 +1,63 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: brank
+      POSTGRES_PASSWORD: brank
+      POSTGRES_DB: brank
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U brank -d brank"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ingestion:
+    build:
+      context: .
+      dockerfile: ingestion/Dockerfile
+    environment:
+      DATABASE_URL: postgres://brank:brank@db:5432/brank
+      INGESTION_PORT: 4001
+    ports:
+      - "4001:4001"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    environment:
+      DATABASE_URL: postgres://brank:brank@db:5432/brank
+      INGESTION_URL: http://ingestion:4001
+      PORT: 4000
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      LLM_PROVIDER: ${LLM_PROVIDER:-openai}
+      LLM_MODEL: ${LLM_MODEL:-gpt-4o-mini}
+    ports:
+      - "4000:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+      ingestion:
+        condition: service_started
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - server
+
+volumes:
+  pgdata:

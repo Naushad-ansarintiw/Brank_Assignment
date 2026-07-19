@@ -1,0 +1,16 @@
+{
+  "name": "brank-llm-logging",
+  "private": true,
+  "workspaces": [
+    "sdk",
+    "ingestion",
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "build": "npm run build -w @brank/llm-logger && npm run build -w ingestion && npm run build -w server && npm run build -w web",
+    "dev:ingestion": "npm run dev -w ingestion",
+    "dev:server": "npm run dev -w server",
+    "dev:web": "npm run dev -w web"
+  }
+}
